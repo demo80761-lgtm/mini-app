@@ -6,7 +6,7 @@
   <title>Taroq | Premium soch taroq</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="[https://telegram.org/js/telegram-web-app.js](https://telegram.org/js/telegram-web-app.js)"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     /* Siz bergan ranglar jadvalidagi aniq ranglar */
     :root {
@@ -412,7 +412,7 @@
       try {
         const { error: insertError } = await supabaseClient
           .from('orders')
-          .insert({
+          .insert([{
             telegram_user_id: tgUserId,
             customer_name: name,
             phone: phone,
@@ -420,10 +420,11 @@
             quantity: qty,
             total_amount: totalAmount,
             created_at: new Date().toISOString()
-          });
+          }]);
         
         if (insertError) {
-          alert("Buyurtma qabul qilindi, ammo maʼlumotlarni saqlashda ozgina muammo bor. Admin bilan bog‘lanamiz.");
+          console.error("Supabase xatosi:", insertError);
+          alert("Xatolik: Ma'lumotni saqlab bo'lmadi (" + insertError.message + "). Jadvalingizning RLS ruxsatlarini tekshiring.");
         } else {
           const newStock = settings.stock - qty;
           const { error: updateError } = await supabaseClient
@@ -435,12 +436,12 @@
             settings.stock = newStock;
             updateUI();
           }
+          
+          closeModal();
+          alert(`🎉 Buyurtmangiz qabul qilindi!\n📦 Miqdor: ${qty} ta\n💰 Jami: ${formatNumber(totalAmount)} so‘m\n📞 Tez orada siz bilan bog‘lanamiz.`);
+          
+          if (settings.stock === 0) updateUI();
         }
-
-        closeModal();
-        alert(`🎉 Buyurtmangiz qabul qilindi!\n📦 Miqdor: ${qty} ta\n💰 Jami: ${formatNumber(totalAmount)} so‘m\n📞 Tez orada siz bilan bog‘lanamiz.`);
-        
-        if (settings.stock === 0) updateUI();
       } catch (err) {
         alert("Texnik xatolik yuz berdi, ammo tez orada siz bilan bog‘lanamiz.");
         closeModal();

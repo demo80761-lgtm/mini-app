@@ -123,18 +123,67 @@
     <!-- Asosiy karta (yordamchi fon #1E293B) -->
     <div class="bg-[#1E293B] rounded-3xl shadow-2xl overflow-hidden border border-[#334155]/50">
       
-      <!-- Mahsulot rasmi -->
-      <div class="w-full bg-[#0F172A]/40 relative">
-        <img id="product-image" 
-             src="https://via.placeholder.com/600x500/1E293B/38BDF8?text=Ikki+Tomonlama+Taroq" 
-             class="w-full object-cover" 
-             alt="Ikki tomonlama professional taroq"
-             style="aspect-ratio: 600/500; background: #0F172A;">
+      <!-- MAHSULOT RASMI (KARUSEL QISMI) -->
+      <div class="w-full bg-[#0F172A]/40 relative group">
+        <style>
+          /* Karusel uchun scrollbarni yashirish */
+          .hide-scroll::-webkit-scrollbar { display: none; }
+          .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        </style>
+        
+        <div id="carousel-track" class="flex overflow-x-auto snap-x snap-mandatory scroll-smooth hide-scroll">
+          <img src="https://drive.google.com/uc?export=view&id=1yI57DTTsgOgp90w0tnTr0TRjR_neHvhr" 
+               class="w-full flex-shrink-0 snap-center object-cover" 
+               alt="Taroq rasm 1" style="aspect-ratio: 600/500;">
+          
+          <img src="https://drive.google.com/uc?export=view&id=1O5PDUpXQRJpzA9jO2VoXRQ2182p70dJC" 
+               class="w-full flex-shrink-0 snap-center object-cover" 
+               alt="Taroq rasm 2" style="aspect-ratio: 600/500;">
+          
+          <img src="https://drive.google.com/uc?export=view&id=1auZfrfXGf46ZF3x_InNQb2cvKTl3x1x3" 
+               class="w-full flex-shrink-0 snap-center object-cover" 
+               alt="Taroq rasm 3" style="aspect-ratio: 600/500;">
+        </div>
+
         <!-- Kichik badge -->
-        <div class="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-semibold border border-white/10 text-[#38BDF8]">
+        <div class="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-semibold border border-white/10 text-[#38BDF8] z-10">
           Premium Sifat
         </div>
+
+        <!-- Karusel indikatorlari -->
+        <div class="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-10" id="carousel-dots">
+          <button class="w-2 h-2 rounded-full bg-[#38BDF8] transition-colors" onclick="scrollToSlide(0)"></button>
+          <button class="w-2 h-2 rounded-full bg-white/40 transition-colors" onclick="scrollToSlide(1)"></button>
+          <button class="w-2 h-2 rounded-full bg-white/40 transition-colors" onclick="scrollToSlide(2)"></button>
+        </div>
+
+        <!-- Yon tomonga o'tkazish tugmalari -->
+        <button onclick="scrollSlide(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10 backdrop-blur-sm">❮</button>
+        <button onclick="scrollSlide(1)" class="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10 backdrop-blur-sm">❯</button>
+
+        <script>
+          const track = document.getElementById('carousel-track');
+          const dots = document.getElementById('carousel-dots').children;
+          
+          function updateDots() {
+            const index = Math.round(track.scrollLeft / track.offsetWidth);
+            for (let i = 0; i < dots.length; i++) {
+              dots[i].className = i === index ? 'w-2 h-2 rounded-full bg-[#38BDF8] transition-colors' : 'w-2 h-2 rounded-full bg-white/40 transition-colors';
+            }
+          }
+          
+          function scrollToSlide(index) {
+            track.scrollTo({ left: index * track.offsetWidth, behavior: 'smooth' });
+          }
+
+          function scrollSlide(dir) {
+            track.scrollBy({ left: dir * track.offsetWidth, behavior: 'smooth' });
+          }
+
+          track.addEventListener('scroll', updateDots);
+        </script>
       </div>
+      <!-- MAHSULOT RASMI (KARUSEL QISMI) TUGADI -->
 
       <!-- Matn va tugmalar qismi -->
       <div class="p-6 space-y-5">

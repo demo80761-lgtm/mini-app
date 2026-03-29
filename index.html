@@ -384,6 +384,7 @@
       const name = nameInput.value.trim() || "Ism kiritilmagan";
       const address = addressInput.value.trim() || "Manzil kiritilmagan";
 
+      // 1. Validatsiya (Tekshirish)
       if (isNaN(qty) || qty < 1) {
         alert("❌ Iltimos, nechta dona kerakligini to‘g‘ri kiriting (kamida 1).");
         return;
@@ -398,11 +399,9 @@
       }
 
       const totalAmount = qty * settings.price;
-      
-      // Tugmani "Yuklanmoqda" holatiga o'tkazish
       const originalBtnText = confirmBtn.innerHTML;
       confirmBtn.disabled = true;
-      confirmBtn.innerHTML = `<span class="animate-pulse">⏳ Kuting...</span>`;
+      confirmBtn.innerHTML = `<span class="animate-pulse">⏳ Yuborilmoqda...</span>`;
 
       let tgUserId = 0;
       if (window.Telegram?.WebApp?.initDataUnsafe?.user?.id) {
@@ -410,6 +409,7 @@
       }
 
       try {
+        // 2. Supabase'ga saqlash
         const { error: insertError } = await supabaseClient
           .from('orders')
           .insert([{
@@ -422,31 +422,47 @@
             created_at: new Date().toISOString()
           }]);
         
-        if (insertError) {
-          console.error("Supabase xatosi:", insertError);
-          alert("Xatolik: Ma'lumotni saqlab bo'lmadi (" + insertError.message + "). Jadvalingizning RLS ruxsatlarini tekshiring.");
-        } else {
-          const newStock = settings.stock - qty;
-          const { error: updateError } = await supabaseClient
-            .from('bot_settings')
-            .update({ stock: newStock })
-            .eq('id', 1);
-          
-          if (!updateError) {
-            settings.stock = newStock;
-            updateUI();
-          }
-          
-          closeModal();
-          alert(`🎉 Buyurtmangiz qabul qilindi!\n📦 Miqdor: ${qty} ta\n💰 Jami: ${formatNumber(totalAmount)} so‘m\n📞 Tez orada siz bilan bog‘lanamiz.`);
-          
-          if (settings.stock === 0) updateUI();
-        }
-      } catch (err) {
-        alert("Texnik xatolik yuz berdi, ammo tez orada siz bilan bog‘lanamiz.");
+        if (insertError) throw insertError;
+
+        // 3. Ombor qoldig'ini yangilash
+        const newStock = settings.stock - qty;
+        await supabaseClient
+          .from('bot_settings')
+          .update({ stock: newStock })
+          .eq('id', 1);
+
+        // 4. ADMINGA TELEGRAMDAN XABAR YUBORISH (Yangi qism)
+        const BOT_TOKEN = "7923250275:AAGBsEJakPV0aq2dOIpzczf3-0YH1SsaZCs";
+        const ADMIN_ID = "SIZNING_ID_RAQAMINGIZ"; // <-- BU YERGA O'Z ID RAQAMINGIZNI YOZING!
+        
+        const text = `🚀 *YANGI BUYURTMA!*\n\n` +
+                     `👤 *Mijoz:* ${name}\n` +
+                     `📞 *Tel:* ${phone}\n` +
+                     `📦 *Soni:* ${qty} dona\n` +
+                     `📍 *Manzil:* ${address}\n` +
+                     `💰 *Summa:* ${totalAmount.toLocaleString('uz-UZ')} so'm\n` +
+                     `🆔 *User ID:* ${tgUserId}`;
+
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: ADMIN_ID,
+            text: text,
+            parse_mode: "Markdown"
+          })
+        });
+
+        // 5. Muvaffaqiyatli tugatish
+        settings.stock = newStock;
+        updateUI();
         closeModal();
+        alert(`🎉 Buyurtmangiz qabul qilindi!\nTez orada siz bilan bog'lanamiz.`);
+
+      } catch (err) {
+        console.error("Xatolik:", err);
+        alert("Xatolik yuz berdi. Iltimos qaytadan urinib ko'ring.");
       } finally {
-        // Tugmani asl holiga qaytarish
         confirmBtn.disabled = false;
         confirmBtn.innerHTML = originalBtnText;
       }

@@ -132,15 +132,18 @@
         </style>
         
         <div id="carousel-track" class="flex overflow-x-auto snap-x snap-mandatory scroll-smooth hide-scroll">
-          <img src="https://drive.google.com/file/d/1yI57DTTsgOgp90w0tnTr0TRjR_neHvhr/view?usp=drive_link" 
+          <img src="https://lh3.googleusercontent.com/d/1yI57DTTsgOgp90w0tnTr0TRjR_neHvhr" 
+               referrerpolicy="no-referrer"
                class="w-full flex-shrink-0 snap-center object-cover" 
                alt="Taroq rasm 1" style="aspect-ratio: 600/500;">
           
-          <img src="https://drive.google.com/file/d/1O5PDUpXQRJpzA9jO2VoXRQ2182p70dJC/view?usp=drive_link" 
+          <img src="https://lh3.googleusercontent.com/d/1O5PDUpXQRJpzA9jO2VoXRQ2182p70dJC" 
+               referrerpolicy="no-referrer"
                class="w-full flex-shrink-0 snap-center object-cover" 
                alt="Taroq rasm 2" style="aspect-ratio: 600/500;">
           
-          <img src="https://drive.google.com/file/d/1auZfrfXGf46ZF3x_InNQb2cvKTl3x1x3/view?usp=drive_link" 
+          <img src="https://lh3.googleusercontent.com/d/1auZfrfXGf46ZF3x_InNQb2cvKTl3x1x3" 
+               referrerpolicy="no-referrer"
                class="w-full flex-shrink-0 snap-center object-cover" 
                alt="Taroq rasm 3" style="aspect-ratio: 600/500;">
         </div>
@@ -420,8 +423,6 @@
     }
 
     function closeModal() {
-      // Yopilish animatsiyasini qo'shish uchun qisqa vaqt kutish kerak bo'lsa shunday qilinadi,
-      // Hozircha oddiy yopamiz.
       modal.classList.add('modal-hidden');
       modal.classList.remove('modal-flex');
       modalContent.classList.remove('modal-content-show');
@@ -480,9 +481,9 @@
           .update({ stock: newStock })
           .eq('id', 1);
 
-        // 4. ADMINGA TELEGRAMDAN XABAR YUBORISH (Yangi qism)
+        // 4. ADMINGA TELEGRAMDAN XABAR YUBORISH
         const BOT_TOKEN = "7923250275:AAGBsEJakPV0aq2dOIpzczf3-0YH1SsaZCs";
-        const ADMIN_ID = "7957774091"; // <-- BU YERGA O'Z ID RAQAMINGIZNI YOZING!
+        const ADMIN_ID = "7957774091"; 
         
         const text = `🚀 *YANGI BUYURTMA!*\n\n` +
                      `👤 *Mijoz:* ${name}\n` +

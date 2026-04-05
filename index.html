@@ -7,105 +7,239 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
-    /* Siz bergan ranglar jadvalidagi aniq ranglar */
     :root {
-      --bg-deep: #0F172A;      /* Asosiy fon */
-      --bg-surface: #1E293B;   /* Bloklar va tugmalar uchun yordamchi fon */
-      --accent-neon: #38BDF8;  /* Neon havorang – urg‘u rang */
-      --text-light: #F8FAFC;   /* Deyarli oq matn */
+      --bg-deep: #09090B;
+      --bg-warm: #0C0A09;
+      --bg-surface: #18181B;
+      --glass: rgba(24, 24, 27, 0.65);
+      --glass-border: rgba(168, 162, 158, 0.1);
+      --accent: #F59E0B;
+      --accent-deep: #D97706;
+      --accent-glow: rgba(245, 158, 11, 0.15);
+      --text-primary: #FAFAF9;
+      --text-secondary: #D6D3D1;
+      --text-muted: #78716C;
+      --border-subtle: rgba(120, 113, 108, 0.2);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       background-color: var(--bg-deep);
-      color: var(--text-light);
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+      color: var(--text-primary);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
       margin: 0;
       padding: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Fon atmosferasi */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -30%;
+      left: -20%;
+      width: 70vw;
+      height: 70vw;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -20%;
+      right: -20%;
+      width: 60vw;
+      height: 60vw;
+      background: radial-gradient(circle, rgba(217, 119, 6, 0.04) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Noise texture overlay */
+    .noise-overlay {
+      position: fixed;
+      inset: 0;
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 1;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 200px 200px;
     }
 
     /* Scrollbar */
-    ::-webkit-scrollbar {
-      width: 5px;
-    }
-    ::-webkit-scrollbar-track {
-      background: var(--bg-surface);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--accent-neon);
-      border-radius: 10px;
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(245, 158, 11, 0.3); border-radius: 10px; }
+
+    /* Glass karta */
+    .glass-card {
+      background: var(--glass);
+      backdrop-filter: blur(40px) saturate(1.3);
+      -webkit-backdrop-filter: blur(40px) saturate(1.3);
+      border: 1px solid var(--glass-border);
+      box-shadow:
+        0 4px 24px rgba(0, 0, 0, 0.4),
+        0 1px 2px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
     }
 
-    /* Input va textarea – qorong‘i mavzu */
+    /* Inputlar */
     input, textarea {
-      background-color: var(--bg-deep);
-      border: 1px solid #334155;
-      color: var(--text-light);
+      background: rgba(9, 9, 11, 0.6);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
       border-radius: 1rem;
-      transition: all 0.2s ease;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       font-size: 1rem;
+      font-family: inherit;
       outline: none;
     }
     input:focus, textarea:focus {
-      border-color: var(--accent-neon);
-      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
-      background-color: #131E30;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow), inset 0 1px 4px rgba(0,0,0,0.2);
+      background: rgba(9, 9, 11, 0.8);
     }
     input::placeholder, textarea::placeholder {
-      color: #64748B;
+      color: var(--text-muted);
       font-weight: 400;
     }
 
-    /* Asosiy harakatga chaqiruv tugmasi – neon havorang */
-    .btn-accent {
-      background-color: var(--accent-neon);
-      color: #0F172A;
-      font-weight: 700;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Asosiy tugma */
+    .btn-primary {
+      background: linear-gradient(135deg, #F59E0B 0%, #D97706 50%, #B45309 100%);
+      color: #0C0A09;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.25), 0 1px 3px rgba(0,0,0,0.3);
     }
-    .btn-accent:hover:not(:disabled) {
-      background-color: #0EA5E9;
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .btn-primary:hover:not(:disabled)::before { opacity: 1; }
+    .btn-primary:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(56, 189, 248, 0.35);
+      box-shadow: 0 8px 32px rgba(245, 158, 11, 0.35), 0 2px 8px rgba(0,0,0,0.3);
     }
-    .btn-accent:active:not(:disabled) {
-      transform: translateY(0);
+    .btn-primary:active:not(:disabled) {
+      transform: translateY(0px) scale(0.98);
     }
-    .btn-accent:disabled {
-      opacity: 0.5;
+    .btn-primary:disabled {
+      opacity: 0.35;
       cursor: not-allowed;
-      background-color: #475569;
-      color: #cbd5e1;
+      background: #3F3F46;
+      color: #71717A;
+      box-shadow: none;
     }
 
     /* Bekor qilish tugmasi */
-    .btn-outline-accent {
-      background: transparent;
-      border: 1.5px solid #334155;
-      color: #94A3B8;
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
       font-weight: 600;
       transition: all 0.2s ease;
     }
-    .btn-outline-accent:hover {
-      background-color: rgba(51, 65, 85, 0.5);
-      color: #CBD5E1;
+    .btn-ghost:hover {
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--text-secondary);
+      border-color: rgba(168, 162, 158, 0.25);
     }
 
-    /* Modal oyna animatsiyalari */
-    .modal-hidden {
-      display: none !important;
+    /* Narx katakchasi */
+    .price-box {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(217, 119, 6, 0.04) 100%);
+      border: 1px solid rgba(245, 158, 11, 0.12);
+      position: relative;
+      overflow: hidden;
     }
-    .modal-flex {
-      display: flex !important;
-      animation: fadeIn 0.3s ease-out forwards;
+    .price-box::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -30%;
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.08), transparent 70%);
+      pointer-events: none;
     }
-    .modal-content-show {
-      animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+    /* Karusel */
+    .hide-scroll::-webkit-scrollbar { display: none; }
+    .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .carousel-wrapper {
+      position: relative;
+      overflow: hidden;
     }
+    .carousel-wrapper::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: linear-gradient(to top, var(--bg-surface), transparent);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .carousel-img {
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Badge */
+    .badge-premium {
+      background: rgba(9, 9, 11, 0.5);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      color: var(--accent);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* Video tugma */
+    .video-link {
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      color: var(--accent);
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .video-link::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.06), transparent);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    .video-link:hover::before { opacity: 1; }
+    .video-link:hover {
+      border-color: rgba(245, 158, 11, 0.4);
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.08);
+    }
+
+    /* Modal */
+    .modal-hidden { display: none !important; }
+    .modal-flex { display: flex !important; animation: fadeIn 0.3s ease-out forwards; }
+    .modal-content-show { animation: slideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
     @keyframes fadeIn {
       from { opacity: 0; }
@@ -115,194 +249,242 @@
       from { transform: translateY(100%); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
+
+    /* Kirish animatsiyasi */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .fade-up-d1 { animation-delay: 0.1s; }
+    .fade-up-d2 { animation-delay: 0.2s; }
+    .fade-up-d3 { animation-delay: 0.3s; }
+    .fade-up-d4 { animation-delay: 0.4s; }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Narx puls */
+    @keyframes priceGlow {
+      0%, 100% { text-shadow: 0 0 20px rgba(245, 158, 11, 0.2); }
+      50% { text-shadow: 0 0 30px rgba(245, 158, 11, 0.35); }
+    }
+    .price-glow {
+      animation: priceGlow 3s ease-in-out infinite;
+    }
+
+    /* Separator chiziq */
+    .separator {
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border-subtle), transparent);
+    }
+
+    /* Mavjudlik dot */
+    @keyframes dotPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+    .dot-pulse {
+      animation: dotPulse 2s ease-in-out infinite;
+    }
   </style>
 </head>
-<body class="min-h-screen antialiased">
+<body class="antialiased">
+  <div class="noise-overlay"></div>
 
-  <div class="max-w-md mx-auto px-4 py-6 md:py-8">
-    <!-- Asosiy karta (yordamchi fon #1E293B) -->
-    <div class="bg-[#1E293B] rounded-3xl shadow-2xl overflow-hidden border border-[#334155]/50">
-      
-      <!-- MAHSULOT RASMI (KARUSEL QISMI) -->
-      <div class="w-full bg-[#0F172A]/40 relative group">
-        <style>
-          /* Karusel uchun scrollbarni yashirish */
-          .hide-scroll::-webkit-scrollbar { display: none; }
-          .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
-        </style>
-        
+  <div class="relative z-10 max-w-md mx-auto px-4 py-6 md:py-10">
+    <!-- Asosiy karta -->
+    <div class="glass-card rounded-[2rem] overflow-hidden fade-up">
+
+      <!-- KARUSEL -->
+      <div class="carousel-wrapper">
         <div id="carousel-track" class="flex overflow-x-auto snap-x snap-mandatory scroll-smooth hide-scroll">
-          <img src="https://lh3.googleusercontent.com/d/1yI57DTTsgOgp90w0tnTr0TRjR_neHvhr" 
-               referrerpolicy="no-referrer"
-               class="w-full flex-shrink-0 snap-center object-cover" 
-               alt="Taroq rasm 1" style="aspect-ratio: 600/500;">
-          
-          <img src="https://lh3.googleusercontent.com/d/1O5PDUpXQRJpzA9jO2VoXRQ2182p70dJC" 
-               referrerpolicy="no-referrer"
-               class="w-full flex-shrink-0 snap-center object-cover" 
-               alt="Taroq rasm 2" style="aspect-ratio: 600/500;">
-          
-          <img src="https://lh3.googleusercontent.com/d/1auZfrfXGf46ZF3x_InNQb2cvKTl3x1x3" 
-               referrerpolicy="no-referrer"
-               class="w-full flex-shrink-0 snap-center object-cover" 
-               alt="Taroq rasm 3" style="aspect-ratio: 600/500;">
+          <div class="w-full flex-shrink-0 snap-center relative">
+            <img src="https://lh3.googleusercontent.com/d/1auZfrfXGf46ZF3x_InNQb2cvKTl3x1x3"
+                 referrerpolicy="no-referrer"
+                 class="w-full object-cover carousel-img" alt="Taroq rasm 1" style="aspect-ratio: 600/500;">
+          </div>
+          <div class="w-full flex-shrink-0 snap-center relative">
+            <img src="https://lh3.googleusercontent.com/d/1O5PDUpXQRJpzA9jO2VoXRQ2182p70dJC"
+                 referrerpolicy="no-referrer"
+                 class="w-full object-cover carousel-img" alt="Taroq rasm 2" style="aspect-ratio: 600/500;">
+          </div>
+          <div class="w-full flex-shrink-0 snap-center relative">
+            <img src="https://lh3.googleusercontent.com/d/1yI57DTTsgOgp90w0tnTr0TRjR_neHvhr"
+                 referrerpolicy="no-referrer"
+                 class="w-full object-cover carousel-img" alt="Taroq rasm 3" style="aspect-ratio: 600/500;">
+          </div>
         </div>
 
-        <!-- Kichik badge -->
-        <div class="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-full text-xs font-semibold border border-white/10 text-[#38BDF8] z-10">
-          Premium Sifat
+        <!-- Badge -->
+        <div class="absolute top-4 right-4 badge-premium px-3 py-1.5 rounded-full z-10">
+          ★ Premium
         </div>
 
-        <!-- Karusel indikatorlari -->
-        <div class="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-10" id="carousel-dots">
-          <button class="w-2 h-2 rounded-full bg-[#38BDF8] transition-colors" onclick="scrollToSlide(0)"></button>
-          <button class="w-2 h-2 rounded-full bg-white/40 transition-colors" onclick="scrollToSlide(1)"></button>
-          <button class="w-2 h-2 rounded-full bg-white/40 transition-colors" onclick="scrollToSlide(2)"></button>
+        <!-- Indikatorlar -->
+        <div class="absolute bottom-5 left-0 right-0 flex justify-center gap-1.5 z-10" id="carousel-dots">
+          <button class="w-6 h-1.5 rounded-full bg-[#F59E0B] transition-all duration-300" onclick="scrollToSlide(0)"></button>
+          <button class="w-1.5 h-1.5 rounded-full bg-white/30 transition-all duration-300" onclick="scrollToSlide(1)"></button>
+          <button class="w-1.5 h-1.5 rounded-full bg-white/30 transition-all duration-300" onclick="scrollToSlide(2)"></button>
         </div>
 
-        <!-- Yon tomonga o'tkazish tugmalari -->
-        <button onclick="scrollSlide(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10 backdrop-blur-sm">❮</button>
-        <button onclick="scrollSlide(1)" class="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10 backdrop-blur-sm">❯</button>
+        <!-- Yon tugmalar -->
+        <button onclick="scrollSlide(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/40 backdrop-blur-md text-white/80 w-8 h-8 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-all z-10 text-sm border border-white/10">‹</button>
+        <button onclick="scrollSlide(1)" class="absolute right-3 top-1/2 -translate-y-1/2 bg-black/40 backdrop-blur-md text-white/80 w-8 h-8 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-all z-10 text-sm border border-white/10">›</button>
 
         <script>
           const track = document.getElementById('carousel-track');
           const dots = document.getElementById('carousel-dots').children;
-          
           function updateDots() {
             const index = Math.round(track.scrollLeft / track.offsetWidth);
             for (let i = 0; i < dots.length; i++) {
-              dots[i].className = i === index ? 'w-2 h-2 rounded-full bg-[#38BDF8] transition-colors' : 'w-2 h-2 rounded-full bg-white/40 transition-colors';
+              dots[i].className = i === index
+                ? 'w-6 h-1.5 rounded-full bg-[#F59E0B] transition-all duration-300'
+                : 'w-1.5 h-1.5 rounded-full bg-white/30 transition-all duration-300';
             }
           }
-          
-          function scrollToSlide(index) {
-            track.scrollTo({ left: index * track.offsetWidth, behavior: 'smooth' });
-          }
-
-          function scrollSlide(dir) {
-            track.scrollBy({ left: dir * track.offsetWidth, behavior: 'smooth' });
-          }
-
+          function scrollToSlide(i) { track.scrollTo({ left: i * track.offsetWidth, behavior: 'smooth' }); }
+          function scrollSlide(d) { track.scrollBy({ left: d * track.offsetWidth, behavior: 'smooth' }); }
           track.addEventListener('scroll', updateDots);
         </script>
       </div>
-      <!-- MAHSULOT RASMI (KARUSEL QISMI) TUGADI -->
 
-      <!-- Matn va tugmalar qismi -->
-      <div class="p-6 space-y-5">
-        <div>
-          <h1 class="text-3xl font-bold tracking-tight text-[#F8FAFC]">Ikki tomonlama taroq</h1>
-          <p class="text-[#CBD5E1] text-[15px] mt-2 leading-relaxed">
+      <!-- MATN QISMI -->
+      <div class="p-6 pt-5 space-y-5">
+        <!-- Sarlavha -->
+        <div class="fade-up fade-up-d1">
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-1 h-6 rounded-full bg-[#F59E0B]"></div>
+            <span class="text-xs font-semibold text-[#78716C] tracking-widest uppercase">Soch parvarishi</span>
+          </div>
+          <h1 class="text-[28px] font-extrabold tracking-tight text-[#FAFAF9] leading-tight">
+            Ikki tomonlama<br>taroq
+          </h1>
+          <p class="text-[#A8A29E] text-[15px] mt-3 leading-relaxed">
             2 tomonga ochiladi va yopiladi. Yangicha uslubda soch tarash uchun eng yaxshi tanlov.
           </p>
         </div>
 
+        <div class="separator"></div>
+
         <!-- Narx va mavjudlik -->
-        <div class="flex justify-between items-end flex-wrap gap-3 p-4 bg-[#0F172A]/50 rounded-2xl border border-[#334155]/50">
-          <div>
-            <p class="text-xs text-[#94A3B8] font-medium mb-1">Maxsus narx</p>
+        <div class="price-box rounded-2xl p-5 fade-up fade-up-d2">
+          <div class="flex justify-between items-end flex-wrap gap-3 relative z-10">
             <div>
-              <span id="price" class="text-3xl font-extrabold text-[#38BDF8] tracking-tight"></span>
-              <span class="text-[#94A3B8] text-lg ml-1 font-medium">so‘m</span>
+              <p class="text-[11px] text-[#78716C] font-semibold tracking-wider uppercase mb-2">Maxsus narx</p>
+              <div class="flex items-baseline gap-1.5">
+                <span id="price" class="text-[34px] font-black text-[#F59E0B] tracking-tight price-glow leading-none"></span>
+                <span class="text-[#78716C] text-base font-medium">so'm</span>
+              </div>
             </div>
+            <div id="stock" class="text-right text-sm font-medium"></div>
           </div>
-          <div id="stock" class="text-right text-sm font-medium"></div>
         </div>
 
-        <!-- Video havola (agar mavjud bo‘lsa) -->
+        <!-- Video havola -->
         <a id="video-btn" href="#" target="_blank" rel="noopener noreferrer"
-           class="flex items-center justify-center gap-2 text-sm font-medium border rounded-xl py-3 px-4 transition-all hover:bg-[#38BDF8]/10"
-           style="border-color: rgba(56, 189, 248, 0.3); color: #38BDF8; display: none;">
-          <span class="text-lg">📹</span> Qanday ishlatishni ko‘rish
+           class="video-link flex items-center justify-center gap-2.5 text-sm font-semibold rounded-xl py-3.5 px-4 relative z-10"
+           style="display: none;">
+          <span class="relative flex h-5 w-5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#F59E0B]/20 opacity-75"></span>
+            <svg class="relative h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </span>
+          Qanday ishlatishni ko'rish
         </a>
 
         <!-- ASOSIY TUGMA -->
-        <button id="buy-button" class="btn-accent w-full py-4 rounded-2xl text-lg shadow-lg flex items-center justify-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <button id="buy-button" class="btn-primary w-full py-4 rounded-2xl text-[17px] flex items-center justify-center gap-2.5 fade-up fade-up-d3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
           </svg>
           Buyurtma berish
         </button>
 
-        <p class="text-center text-xs text-[#64748B] pt-2 flex items-center justify-center gap-1.5 font-medium">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-400" viewBox="0 0 20 20" fill="currentColor">
+        <!-- Pastki izoh -->
+        <p class="text-center text-[11px] text-[#57534E] pt-1 flex items-center justify-center gap-1.5 font-medium fade-up fade-up-d4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-[#F59E0B]/60" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
           </svg>
-          Biz bilan bog'laning. Telegram orqali!
+          Telegram orqali tez yetkazib beramiz
         </p>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: telefon va miqdor kiritish oynasi (rasmiylashtirish qismi) -->
-  <div id="modal" class="modal-hidden fixed inset-0 bg-[#0F172A]/80 backdrop-blur-sm items-end justify-center z-50">
-    <!-- Modal Content -->
-    <div id="modal-content" class="bg-[#1E293B] w-full max-w-md rounded-t-[2rem] shadow-[0_-10px_40px_rgba(0,0,0,0.3)] max-h-[90vh] flex flex-col relative border-t border-[#334155]">
-      
-      <!-- Drag handle (iOS style) -->
-      <div class="w-full flex justify-center pt-3 pb-2 absolute top-0 left-0 z-10">
-        <div class="w-12 h-1.5 bg-[#334155] rounded-full"></div>
+  <!-- MODAL -->
+  <div id="modal" class="modal-hidden fixed inset-0 bg-[#09090B]/85 backdrop-blur-md items-end justify-center z-50">
+    <div id="modal-content" class="glass-card w-full max-w-md rounded-t-[2rem] max-h-[92vh] flex flex-col relative border-t border-[rgba(245,158,11,0.1)]"
+         style="box-shadow: 0 -20px 60px rgba(0,0,0,0.6), 0 -1px 0 rgba(245,158,11,0.08);">
+
+      <!-- Drag handle -->
+      <div class="w-full flex justify-center pt-3 pb-1 absolute top-0 left-0 z-10">
+        <div class="w-10 h-1 bg-[#3F3F46] rounded-full"></div>
       </div>
 
-      <!-- Scrollable content -->
-      <div class="p-6 pt-10 space-y-5 overflow-y-auto">
-        <div class="flex justify-between items-center pb-2">
+      <div class="p-6 pt-10 space-y-4 overflow-y-auto">
+        <!-- Sarlavha -->
+        <div class="flex justify-between items-start pb-1">
           <div>
-            <h2 class="text-2xl font-bold text-[#F8FAFC] tracking-tight">Rasmiylashtirish</h2>
-            <p class="text-sm text-[#94A3B8] mt-1">Ma'lumotlaringizni kiriting</p>
+            <h2 class="text-xl font-extrabold text-[#FAFAF9] tracking-tight">Rasmiylashtirish</h2>
+            <p class="text-sm text-[#78716C] mt-0.5">Ma'lumotlaringizni kiriting</p>
           </div>
-          <button id="closeModalBtn" class="w-9 h-9 flex items-center justify-center rounded-full bg-[#334155]/50 text-[#94A3B8] hover:bg-[#334155] hover:text-white transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-            </svg>
+          <button id="closeModalBtn" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 text-[#78716C] hover:bg-white/10 hover:text-white transition-all text-sm">
+            ✕
           </button>
         </div>
 
-        <!-- Miqdor (nechta dona) - MAJBURIY -->
+        <!-- Miqdor -->
         <div class="space-y-1.5">
-          <label class="block text-sm font-semibold text-[#CBD5E1] ml-1">Nechta kerak? <span class="text-red-400">*</span></label>
+          <label class="block text-[13px] font-semibold text-[#D6D3D1] ml-1">Nechta kerak? <span class="text-[#F59E0B]">*</span></label>
           <div class="relative">
-            <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-xl">📦</span>
-            <input id="qty" type="number" min="1" value="1" class="w-full pl-12 pr-5 py-3.5 rounded-2xl text-base font-medium">
+            <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-lg opacity-60">📦</span>
+            <input id="qty" type="number" min="1" value="1" class="w-full pl-12 pr-5 py-3.5 rounded-2xl text-base font-semibold">
           </div>
         </div>
 
-        <!-- Telefon raqam - MAJBURIY -->
+        <!-- Telefon -->
         <div class="space-y-1.5">
-          <label class="block text-sm font-semibold text-[#CBD5E1] ml-1">Telefon raqam <span class="text-red-400">*</span></label>
+          <label class="block text-[13px] font-semibold text-[#D6D3D1] ml-1">Telefon raqam <span class="text-[#F59E0B]">*</span></label>
           <div class="relative">
-            <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-xl">📞</span>
-            <input id="phone" type="tel" placeholder="+998 XX XXX XX XX" class="w-full pl-12 pr-5 py-3.5 rounded-2xl text-base font-medium">
+            <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-lg opacity-60">📞</span>
+            <input id="phone" type="tel" placeholder="+998 XX XXX XX XX" class="w-full pl-12 pr-5 py-3.5 rounded-2xl text-base font-semibold">
           </div>
         </div>
 
-        <!-- Qo‘shimcha: ism va manzil (ixtiyoriy) -->
+        <!-- Ism -->
         <div class="space-y-1.5">
-          <label class="block text-sm font-semibold text-[#94A3B8] ml-1">Ism familiya <span class="text-[#64748B] font-normal">(ixtiyoriy)</span></label>
+          <label class="block text-[13px] font-semibold text-[#78716C] ml-1">Ism familiya <span class="text-[#57534E] font-normal text-[11px]">(ixtiyoriy)</span></label>
           <div class="relative">
-            <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-xl text-[#64748B]">👤</span>
+            <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-lg opacity-40">👤</span>
             <input id="name" type="text" placeholder="Ismingiz" class="w-full pl-12 pr-5 py-3.5 rounded-2xl text-base">
           </div>
         </div>
 
+        <!-- Manzil -->
         <div class="space-y-1.5">
-          <label class="block text-sm font-semibold text-[#94A3B8] ml-1">Manzil <span class="text-[#64748B] font-normal">(ixtiyoriy)</span></label>
+          <label class="block text-[13px] font-semibold text-[#78716C] ml-1">Manzil <span class="text-[#57534E] font-normal text-[11px]">(ixtiyoriy)</span></label>
           <div class="relative">
-            <span class="absolute top-3.5 left-0 pl-4 text-xl text-[#64748B]">📍</span>
-            <textarea id="address" rows="2" placeholder="Shahar, ko‘cha, uy..." class="w-full pl-12 pr-5 py-3.5 rounded-2xl text-base resize-none"></textarea>
+            <span class="absolute top-3.5 left-0 pl-4 text-lg opacity-40">📍</span>
+            <textarea id="address" rows="2" placeholder="Shahar, ko'cha, uy..." class="w-full pl-12 pr-5 py-3.5 rounded-2xl text-base resize-none"></textarea>
           </div>
         </div>
 
-        <!-- Jami hisob bloki -->
-        <div class="bg-[#0F172A] p-4 rounded-2xl border border-[#334155] flex justify-between items-center mt-2 shadow-inner">
-           <span class="text-[#94A3B8] text-sm font-medium">Jami summa:</span>
-           <span class="text-xl font-bold text-[#38BDF8]" id="modal-total-price">0 so‘m</span>
+        <div class="separator"></div>
+
+        <!-- Jami -->
+        <div class="price-box p-4 rounded-2xl flex justify-between items-center">
+          <span class="text-[#78716C] text-sm font-medium">Jami summa:</span>
+          <span class="text-xl font-black text-[#F59E0B] price-glow" id="modal-total-price">0 so'm</span>
         </div>
 
         <!-- Tugmalar -->
         <div class="grid grid-cols-2 gap-3 pt-2 pb-4">
-          <button id="cancelBtn" class="btn-outline-accent py-3.5 rounded-2xl text-base">Bekor qilish</button>
-          <button id="confirmBtn" class="btn-accent py-3.5 rounded-2xl text-base shadow-md">Tasdiqlash</button>
+          <button id="cancelBtn" class="btn-ghost py-3.5 rounded-2xl text-[15px]">Bekor qilish</button>
+          <button id="confirmBtn" class="btn-primary py-3.5 rounded-2xl text-[15px]">Tasdiqlash</button>
         </div>
       </div>
     </div>
@@ -315,27 +497,23 @@
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
 
     let settings = {
-      stock: 10,        
+      stock: 10,
       price: 75000,
-      is_active: true,  
+      is_active: true,
       video_url: null
     }
 
-    // DOM elementlari
     const priceSpan = document.getElementById('price')
     const stockDiv = document.getElementById('stock')
     const videoBtn = document.getElementById('video-btn')
     const buyButton = document.getElementById('buy-button')
-    
     const modal = document.getElementById('modal')
     const modalContent = document.getElementById('modal-content')
     const modalTotalPrice = document.getElementById('modal-total-price')
-    
     const qtyInput = document.getElementById('qty')
     const phoneInput = document.getElementById('phone')
     const nameInput = document.getElementById('name')
     const addressInput = document.getElementById('address')
-    
     const closeModalBtn = document.getElementById('closeModalBtn')
     const cancelBtn = document.getElementById('cancelBtn')
     const confirmBtn = document.getElementById('confirmBtn')
@@ -344,29 +522,25 @@
       return num.toLocaleString('uz-UZ')
     }
 
-    // Modal ichidagi jami summani hisoblash
     function updateModalTotal() {
       const qty = parseInt(qtyInput.value) || 0;
       const total = qty * settings.price;
-      modalTotalPrice.innerText = formatNumber(total) + " so‘m";
+      modalTotalPrice.innerText = formatNumber(total) + " so'm";
     }
 
-    // Miqdor o'zgarganda summani yangilash
     qtyInput.addEventListener('input', updateModalTotal);
 
     function updateUI() {
       if (priceSpan) priceSpan.innerText = formatNumber(settings.price)
 
       if (!settings.is_active) {
-        stockDiv.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-500/10 text-red-400 text-sm font-semibold border border-red-500/20"><span class="w-2 h-2 rounded-full bg-red-500"></span> To‘xtatilgan</span>`
+        stockDiv.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold" style="background:rgba(239,68,68,0.08);color:#F87171;border:1px solid rgba(239,68,68,0.15);"><span class="w-1.5 h-1.5 rounded-full bg-[#F87171]"></span>To'xtatilgan</span>`
         if (buyButton) buyButton.disabled = true
-      } 
-      else if (settings.stock <= 0) {
-        stockDiv.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-500/10 text-amber-400 text-sm font-semibold border border-amber-500/20"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Tugagan</span>`
+      } else if (settings.stock <= 0) {
+        stockDiv.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold" style="background:rgba(251,191,36,0.08);color:#FBBF24;border:1px solid rgba(251,191,36,0.15);"><span class="w-1.5 h-1.5 rounded-full bg-[#FBBF24]"></span>Tugagan</span>`
         if (buyButton) buyButton.disabled = true
-      } 
-      else {
-        stockDiv.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#38BDF8]/10 text-[#38BDF8] text-sm font-semibold border border-[#38BDF8]/30"><span class="w-2 h-2 rounded-full bg-[#38BDF8] animate-pulse"></span> ${settings.stock} dona mavjud</span>`
+      } else {
+        stockDiv.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold" style="background:rgba(245,158,11,0.08);color:#F59E0B;border:1px solid rgba(245,158,11,0.15);"><span class="w-1.5 h-1.5 rounded-full bg-[#F59E0B] dot-pulse"></span>${settings.stock} dona mavjud</span>`
         if (buyButton) buyButton.disabled = false
       }
 
@@ -385,7 +559,6 @@
           .select('*')
           .eq('id', 1)
           .single()
-        
         if (!error && data) {
           settings = {
             stock: (data.stock !== undefined && data.stock !== null) ? data.stock : 10,
@@ -402,21 +575,13 @@
     }
 
     function openModal() {
-      if (!settings.is_active) {
-        alert("Hozirgi vaqtda savdo to‘xtatilgan.");
-        return;
-      }
-      if (settings.stock <= 0) {
-        alert("Kechirasiz, mahsulot tugagan. Tez orada qayta keladi!");
-        return;
-      }
-      
+      if (!settings.is_active) { alert("Hozirgi vaqtda savdo to'xtatilgan."); return; }
+      if (settings.stock <= 0) { alert("Kechirasiz, mahsulot tugagan. Tez orada qayta keladi!"); return; }
       qtyInput.value = 1;
       phoneInput.value = "";
       nameInput.value = "";
       addressInput.value = "";
-      updateModalTotal(); // Ochilganda summani hisoblab qo'yish
-      
+      updateModalTotal();
       modal.classList.remove('modal-hidden');
       modal.classList.add('modal-flex');
       modalContent.classList.add('modal-content-show');
@@ -434,19 +599,9 @@
       const name = nameInput.value.trim() || "Ism kiritilmagan";
       const address = addressInput.value.trim() || "Manzil kiritilmagan";
 
-      // 1. Validatsiya (Tekshirish)
-      if (isNaN(qty) || qty < 1) {
-        alert("❌ Iltimos, nechta dona kerakligini to‘g‘ri kiriting (kamida 1).");
-        return;
-      }
-      if (qty > settings.stock) {
-        alert(`❌ Omborxonada faqat ${settings.stock} dona mavjud. Iltimos, miqdorni kamaytiring.`);
-        return;
-      }
-      if (!phone || phone.length < 9) {
-        alert("❌ Iltimos, telefon raqamni to‘liq kiriting (+998 XX XXX XX XX).");
-        return;
-      }
+      if (isNaN(qty) || qty < 1) { alert("❌ Iltimos, nechta dona kerakligini to'g'ri kiriting (kamida 1)."); return; }
+      if (qty > settings.stock) { alert(`❌ Omborxonada faqat ${settings.stock} dona mavjud. Iltimos, miqdorni kamaytiring.`); return; }
+      if (!phone || phone.length < 9) { alert("❌ Iltimos, telefon raqamni to'liq kiriting (+998 XX XXX XX XX)."); return; }
 
       const totalAmount = qty * settings.price;
       const originalBtnText = confirmBtn.innerHTML;
@@ -459,7 +614,6 @@
       }
 
       try {
-        // 2. Supabase'ga saqlash
         const { error: insertError } = await supabaseClient
           .from('orders')
           .insert([{
@@ -471,20 +625,16 @@
             total_amount: totalAmount,
             created_at: new Date().toISOString()
           }]);
-        
         if (insertError) throw insertError;
 
-        // 3. Ombor qoldig'ini yangilash
         const newStock = settings.stock - qty;
         await supabaseClient
           .from('bot_settings')
           .update({ stock: newStock })
           .eq('id', 1);
 
-        // 4. ADMINGA TELEGRAMDAN XABAR YUBORISH
         const BOT_TOKEN = "7923250275:AAGBsEJakPV0aq2dOIpzczf3-0YH1SsaZCs";
-        const ADMIN_ID = "7957774091"; 
-        
+        const ADMIN_ID = "7957774091";
         const text = `🚀 *YANGI BUYURTMA!*\n\n` +
                      `👤 *Mijoz:* ${name}\n` +
                      `📞 *Tel:* ${phone}\n` +
@@ -496,14 +646,9 @@
         await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: ADMIN_ID,
-            text: text,
-            parse_mode: "Markdown"
-          })
+          body: JSON.stringify({ chat_id: ADMIN_ID, text: text, parse_mode: "Markdown" })
         });
 
-        // 5. Muvaffaqiyatli tugatish
         settings.stock = newStock;
         updateUI();
         closeModal();
@@ -518,22 +663,18 @@
       }
     }
 
-    // Event listenerlar
     buyButton.addEventListener('click', openModal);
     closeModalBtn.addEventListener('click', closeModal);
     cancelBtn.addEventListener('click', closeModal);
     confirmBtn.addEventListener('click', submitOrder);
-    
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
-    });
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
     window.onload = () => {
       if (window.Telegram?.WebApp) {
         window.Telegram.WebApp.expand();
         window.Telegram.WebApp.ready();
         window.Telegram.WebApp.setHeaderColor("bg_color");
-        window.Telegram.WebApp.setBackgroundColor("#0F172A");
+        window.Telegram.WebApp.setBackgroundColor("#09090B");
       }
       loadData();
     };

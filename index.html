@@ -37,7 +37,6 @@
       overflow-x: hidden;
     }
 
-    /* Fon atmosferasi */
     body::before {
       content: '';
       position: fixed;
@@ -61,7 +60,6 @@
       z-index: 0;
     }
 
-    /* Noise texture overlay */
     .noise-overlay {
       position: fixed;
       inset: 0;
@@ -73,12 +71,10 @@
       background-size: 200px 200px;
     }
 
-    /* Scrollbar */
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(245, 158, 11, 0.3); border-radius: 10px; }
 
-    /* Glass karta */
     .glass-card {
       background: var(--glass);
       backdrop-filter: blur(40px) saturate(1.3);
@@ -90,7 +86,6 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.03);
     }
 
-    /* Inputlar */
     input, textarea {
       background: rgba(9, 9, 11, 0.6);
       border: 1px solid var(--border-subtle);
@@ -111,7 +106,6 @@
       font-weight: 400;
     }
 
-    /* Asosiy tugma */
     .btn-primary {
       background: linear-gradient(135deg, #F59E0B 0%, #D97706 50%, #B45309 100%);
       color: #0C0A09;
@@ -146,7 +140,6 @@
       box-shadow: none;
     }
 
-    /* Bekor qilish tugmasi */
     .btn-ghost {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid var(--border-subtle);
@@ -160,7 +153,6 @@
       border-color: rgba(168, 162, 158, 0.25);
     }
 
-    /* Narx katakchasi */
     .price-box {
       background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(217, 119, 6, 0.04) 100%);
       border: 1px solid rgba(245, 158, 11, 0.12);
@@ -178,7 +170,6 @@
       pointer-events: none;
     }
 
-    /* Karusel */
     .hide-scroll::-webkit-scrollbar { display: none; }
     .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -202,7 +193,6 @@
       transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* Badge */
     .badge-premium {
       background: rgba(9, 9, 11, 0.5);
       backdrop-filter: blur(16px);
@@ -214,7 +204,6 @@
       text-transform: uppercase;
     }
 
-    /* Video tugma */
     .video-link {
       border: 1px solid rgba(245, 158, 11, 0.2);
       color: var(--accent);
@@ -236,7 +225,6 @@
       box-shadow: 0 0 20px rgba(245, 158, 11, 0.08);
     }
 
-    /* Modal */
     .modal-hidden { display: none !important; }
     .modal-flex { display: flex !important; animation: fadeIn 0.3s ease-out forwards; }
     .modal-content-show { animation: slideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
@@ -250,7 +238,6 @@
       to { transform: translateY(0); opacity: 1; }
     }
 
-    /* Kirish animatsiyasi */
     .fade-up {
       opacity: 0;
       transform: translateY(20px);
@@ -265,7 +252,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Narx puls */
     @keyframes priceGlow {
       0%, 100% { text-shadow: 0 0 20px rgba(245, 158, 11, 0.2); }
       50% { text-shadow: 0 0 30px rgba(245, 158, 11, 0.35); }
@@ -274,13 +260,11 @@
       animation: priceGlow 3s ease-in-out infinite;
     }
 
-    /* Separator chiziq */
     .separator {
       height: 1px;
       background: linear-gradient(to right, transparent, var(--border-subtle), transparent);
     }
 
-    /* Mavjudlik dot */
     @keyframes dotPulse {
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.5; transform: scale(0.8); }
@@ -294,10 +278,8 @@
   <div class="noise-overlay"></div>
 
   <div class="relative z-10 max-w-md mx-auto px-4 py-6 md:py-10">
-    <!-- Asosiy karta -->
     <div class="glass-card rounded-[2rem] overflow-hidden fade-up">
 
-      <!-- KARUSEL -->
       <div class="carousel-wrapper">
         <div id="carousel-track" class="flex overflow-x-auto snap-x snap-mandatory scroll-smooth hide-scroll">
           <div class="w-full flex-shrink-0 snap-center relative">
@@ -317,19 +299,16 @@
           </div>
         </div>
 
-        <!-- Badge -->
         <div class="absolute top-4 right-4 badge-premium px-3 py-1.5 rounded-full z-10">
           ★ Premium
         </div>
 
-        <!-- Indikatorlar -->
         <div class="absolute bottom-5 left-0 right-0 flex justify-center gap-1.5 z-10" id="carousel-dots">
           <button class="w-6 h-1.5 rounded-full bg-[#F59E0B] transition-all duration-300" onclick="scrollToSlide(0)"></button>
           <button class="w-1.5 h-1.5 rounded-full bg-white/30 transition-all duration-300" onclick="scrollToSlide(1)"></button>
           <button class="w-1.5 h-1.5 rounded-full bg-white/30 transition-all duration-300" onclick="scrollToSlide(2)"></button>
         </div>
 
-        <!-- Yon tugmalar -->
         <button onclick="scrollSlide(-1)" class="absolute left-3 top-1/2 -translate-y-1/2 bg-black/40 backdrop-blur-md text-white/80 w-8 h-8 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-all z-10 text-sm border border-white/10">‹</button>
         <button onclick="scrollSlide(1)" class="absolute right-3 top-1/2 -translate-y-1/2 bg-black/40 backdrop-blur-md text-white/80 w-8 h-8 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-all z-10 text-sm border border-white/10">›</button>
 
@@ -350,9 +329,7 @@
         </script>
       </div>
 
-      <!-- MATN QISMI -->
       <div class="p-6 pt-5 space-y-5">
-        <!-- Sarlavha -->
         <div class="fade-up fade-up-d1">
           <div class="flex items-center gap-2 mb-2">
             <div class="w-1 h-6 rounded-full bg-[#F59E0B]"></div>
@@ -368,7 +345,6 @@
 
         <div class="separator"></div>
 
-        <!-- Narx va mavjudlik -->
         <div class="price-box rounded-2xl p-5 fade-up fade-up-d2">
           <div class="flex justify-between items-end flex-wrap gap-3 relative z-10">
             <div>
@@ -382,7 +358,6 @@
           </div>
         </div>
 
-        <!-- Video havola -->
         <a id="video-btn" href="#" target="_blank" rel="noopener noreferrer"
            class="video-link flex items-center justify-center gap-2.5 text-sm font-semibold rounded-xl py-3.5 px-4 relative z-10"
            style="display: none;">
@@ -396,7 +371,6 @@
           Qanday ishlatishni ko'rish
         </a>
 
-        <!-- ASOSIY TUGMA -->
         <button id="buy-button" class="btn-primary w-full py-4 rounded-2xl text-[17px] flex items-center justify-center gap-2.5 fade-up fade-up-d3">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -404,29 +378,25 @@
           Buyurtma berish
         </button>
 
-        <!-- Pastki izoh -->
         <p class="text-center text-[11px] text-[#57534E] pt-1 flex items-center justify-center gap-1.5 font-medium fade-up fade-up-d4">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-[#F59E0B]/60" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
           </svg>
-          Telegram orqali tez yetkazib beramiz
+          Minimal buyurtma — 2 dona · Telegram orqali yetkazamiz
         </p>
       </div>
     </div>
   </div>
 
-  <!-- MODAL -->
   <div id="modal" class="modal-hidden fixed inset-0 bg-[#09090B]/85 backdrop-blur-md items-end justify-center z-50">
     <div id="modal-content" class="glass-card w-full max-w-md rounded-t-[2rem] max-h-[92vh] flex flex-col relative border-t border-[rgba(245,158,11,0.1)]"
          style="box-shadow: 0 -20px 60px rgba(0,0,0,0.6), 0 -1px 0 rgba(245,158,11,0.08);">
 
-      <!-- Drag handle -->
       <div class="w-full flex justify-center pt-3 pb-1 absolute top-0 left-0 z-10">
         <div class="w-10 h-1 bg-[#3F3F46] rounded-full"></div>
       </div>
 
       <div class="p-6 pt-10 space-y-4 overflow-y-auto">
-        <!-- Sarlavha -->
         <div class="flex justify-between items-start pb-1">
           <div>
             <h2 class="text-xl font-extrabold text-[#FAFAF9] tracking-tight">Rasmiylashtirish</h2>
@@ -437,16 +407,14 @@
           </button>
         </div>
 
-        <!-- Miqdor -->
         <div class="space-y-1.5">
-          <label class="block text-[13px] font-semibold text-[#D6D3D1] ml-1">Nechta kerak? <span class="text-[#F59E0B]">*</span></label>
+          <label class="block text-[13px] font-semibold text-[#D6D3D1] ml-1">Nechta kerak? <span class="text-[#F59E0B]">*</span> <span class="text-[#57534E] font-normal text-[11px]">(min. 2)</span></label>
           <div class="relative">
             <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-lg opacity-60">📦</span>
-            <input id="qty" type="number" min="1" value="1" class="w-full pl-12 pr-5 py-3.5 rounded-2xl text-base font-semibold">
+            <input id="qty" type="number" min="2" value="2" class="w-full pl-12 pr-5 py-3.5 rounded-2xl text-base font-semibold">
           </div>
         </div>
 
-        <!-- Telefon -->
         <div class="space-y-1.5">
           <label class="block text-[13px] font-semibold text-[#D6D3D1] ml-1">Telefon raqam <span class="text-[#F59E0B]">*</span></label>
           <div class="relative">
@@ -455,7 +423,6 @@
           </div>
         </div>
 
-        <!-- Ism -->
         <div class="space-y-1.5">
           <label class="block text-[13px] font-semibold text-[#78716C] ml-1">Ism familiya <span class="text-[#57534E] font-normal text-[11px]">(ixtiyoriy)</span></label>
           <div class="relative">
@@ -464,7 +431,6 @@
           </div>
         </div>
 
-        <!-- Manzil -->
         <div class="space-y-1.5">
           <label class="block text-[13px] font-semibold text-[#78716C] ml-1">Manzil <span class="text-[#57534E] font-normal text-[11px]">(ixtiyoriy)</span></label>
           <div class="relative">
@@ -475,13 +441,11 @@
 
         <div class="separator"></div>
 
-        <!-- Jami -->
         <div class="price-box p-4 rounded-2xl flex justify-between items-center">
           <span class="text-[#78716C] text-sm font-medium">Jami summa:</span>
           <span class="text-xl font-black text-[#F59E0B] price-glow" id="modal-total-price">0 so'm</span>
         </div>
 
-        <!-- Tugmalar -->
         <div class="grid grid-cols-2 gap-3 pt-2 pb-4">
           <button id="cancelBtn" class="btn-ghost py-3.5 rounded-2xl text-[15px]">Bekor qilish</button>
           <button id="confirmBtn" class="btn-primary py-3.5 rounded-2xl text-[15px]">Tasdiqlash</button>
@@ -491,7 +455,6 @@
   </div>
 
   <script>
-    // ======================= KONFIGURATSIYA =======================
     const SUPABASE_URL = "https://jhyihdwixnnvesbgesjc.supabase.co"
     const SUPABASE_KEY = "sb_publishable_wKLwFZ3IOlS52mGxwxeOZQ_m2h4nSCJ"
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
@@ -536,8 +499,8 @@
       if (!settings.is_active) {
         stockDiv.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold" style="background:rgba(239,68,68,0.08);color:#F87171;border:1px solid rgba(239,68,68,0.15);"><span class="w-1.5 h-1.5 rounded-full bg-[#F87171]"></span>To'xtatilgan</span>`
         if (buyButton) buyButton.disabled = true
-      } else if (settings.stock <= 0) {
-        stockDiv.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold" style="background:rgba(251,191,36,0.08);color:#FBBF24;border:1px solid rgba(251,191,36,0.15);"><span class="w-1.5 h-1.5 rounded-full bg-[#FBBF24]"></span>Tugagan</span>`
+      } else if (settings.stock < 2) {
+        stockDiv.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold" style="background:rgba(251,191,36,0.08);color:#FBBF24;border:1px solid rgba(251,191,36,0.15);"><span class="w-1.5 h-1.5 rounded-full bg-[#FBBF24]"></span>Yetarli emas</span>`
         if (buyButton) buyButton.disabled = true
       } else {
         stockDiv.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold" style="background:rgba(245,158,11,0.08);color:#F59E0B;border:1px solid rgba(245,158,11,0.15);"><span class="w-1.5 h-1.5 rounded-full bg-[#F59E0B] dot-pulse"></span>${settings.stock} dona mavjud</span>`
@@ -576,8 +539,8 @@
 
     function openModal() {
       if (!settings.is_active) { alert("Hozirgi vaqtda savdo to'xtatilgan."); return; }
-      if (settings.stock <= 0) { alert("Kechirasiz, mahsulot tugagan. Tez orada qayta keladi!"); return; }
-      qtyInput.value = 1;
+      if (settings.stock < 2) { alert("Kechirasiz, buyurtma uchun kamida 2 dona mahsulot kerak. Hozirda omborda yetarli mahsulot yo'q."); return; }
+      qtyInput.value = 2;
       phoneInput.value = "";
       nameInput.value = "";
       addressInput.value = "";
@@ -599,21 +562,36 @@
       const name = nameInput.value.trim() || "Ism kiritilmagan";
       const address = addressInput.value.trim() || "Manzil kiritilmagan";
 
-      if (isNaN(qty) || qty < 1) { alert("❌ Iltimos, nechta dona kerakligini to'g'ri kiriting (kamida 1)."); return; }
-      if (qty > settings.stock) { alert(`❌ Omborxonada faqat ${settings.stock} dona mavjud. Iltimos, miqdorni kamaytiring.`); return; }
-      if (!phone || phone.length < 9) { alert("❌ Iltimos, telefon raqamni to'liq kiriting (+998 XX XXX XX XX)."); return; }
+      if (isNaN(qty) || qty < 2) { alert("❌ Minimal buyurtma — 2 dona."); return; }
+      if (qty > settings.stock) { alert(`❌ Omborda faqat ${settings.stock} dona bor.`); return; }
+      if (!phone || phone.length < 9) { alert("❌ Telefon raqamni to'liq kiriting."); return; }
 
       const totalAmount = qty * settings.price;
       const originalBtnText = confirmBtn.innerHTML;
       confirmBtn.disabled = true;
       confirmBtn.innerHTML = `<span class="animate-pulse">⏳ Yuborilmoqda...</span>`;
 
+      // Telegram User ID ni aniqlash
       let tgUserId = 0;
-      if (window.Telegram?.WebApp?.initDataUnsafe?.user?.id) {
-        tgUserId = window.Telegram.WebApp.initDataUnsafe.user.id;
+      try {
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+          tgUserId = window.Telegram.WebApp.initDataUnsafe.user.id;
+        }
+      } catch(e) {}
+
+      // Agar Telegram ichida emas — ogohlantirish
+      if (tgUserId === 0) {
+        alert("⚠️ Iltimos, bu sahifani faqat Telegram bot orqali oching!\n\nBrowser'da ochishda xabar yuborib bo'lmaydi.");
+        confirmBtn.disabled = false;
+        confirmBtn.innerHTML = originalBtnText;
+        return;
       }
 
+      const BOT_TOKEN = "7923250275:AAGBsEJakPV0aq2dOIpzczf3-0YH1SsaZCs";
+      const ADMIN_ID = "7957774091";
+
       try {
+        // 1. Supabase'ga saqlash
         const { error: insertError } = await supabaseClient
           .from('orders')
           .insert([{
@@ -627,32 +605,87 @@
           }]);
         if (insertError) throw insertError;
 
+        // 2. Omborni yangilash
         const newStock = settings.stock - qty;
         await supabaseClient
           .from('bot_settings')
           .update({ stock: newStock })
           .eq('id', 1);
 
-        const BOT_TOKEN = "7923250275:AAGBsEJakPV0aq2dOIpzczf3-0YH1SsaZCs";
-        const ADMIN_ID = "7957774091";
-        const text = `🚀 *YANGI BUYURTMA!*\n\n` +
-                     `👤 *Mijoz:* ${name}\n` +
-                     `📞 *Tel:* ${phone}\n` +
-                     `📦 *Soni:* ${qty} dona\n` +
-                     `📍 *Manzil:* ${address}\n` +
-                     `💰 *Summa:* ${totalAmount.toLocaleString('uz-UZ')} so'm\n` +
-                     `🆔 *User ID:* ${tgUserId}`;
+        // 3. Mijoz statistikasi
+        const { data: allOrders } = await supabaseClient
+          .from('orders')
+          .select('quantity, total_amount')
+          .eq('telegram_user_id', tgUserId);
 
-        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: ADMIN_ID, text: text, parse_mode: "Markdown" })
+        const orderList = allOrders || [];
+        const totalOrders = orderList.length;
+        const totalItems = orderList.reduce((s, o) => s + (o.quantity || 0), 0);
+        const totalSpent = orderList.reduce((s, o) => s + (o.total_amount || 0), 0);
+
+        // 4. ADMINGA yuborish
+        const adminMsg =
+          "🚀 <b>YANGI BUYURTMA!</b>\n\n" +
+          "👤 <b>Mijoz:</b> " + name + "\n" +
+          "📞 <b>Tel:</b> " + phone + "\n" +
+          "📦 <b>Soni:</b> " + qty + " dona\n" +
+          "📍 <b>Manzil:</b> " + address + "\n" +
+          "💰 <b>Summa:</b> " + totalAmount.toLocaleString('uz-UZ') + " so'm\n" +
+          "🆔 <b>User ID:</b> <code>" + tgUserId + "</code>\n\n" +
+          "📊 <b>Mijoz statistikasi:</b>\n" +
+          "   • Jami buyurtmalar: " + totalOrders + " ta\n" +
+          "   • Jami mahsulot: " + totalItems + " dona\n" +
+          "   • Umumiy xarid: " + totalSpent.toLocaleString('uz-UZ') + " so'm";
+
+        const adminRes = await fetch("https://api.telegram.org/bot" + BOT_TOKEN + "/sendMessage", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: ADMIN_ID,
+            text: adminMsg,
+            parse_mode: "HTML"
+          })
         });
+        const adminData = await adminRes.json();
+        if (!adminData.ok) {
+          console.error("Admin xabar xatosi:", adminData);
+        }
 
+        // 5. MIJOZGA yuborish
+        const customerMsg =
+          "📦 <b>Buyurtmangiz qabul qilindi!</b>\n\n" +
+          "👤 <b>Sizning buyurtmalaringiz:</b>\n" +
+          "   • Jami buyurtmalar: <b>" + totalOrders + "</b> ta\n" +
+          "   • Jami mahsulot: <b>" + totalItems + "</b> dona\n" +
+          "   • Umumiy summa: <b>" + totalSpent.toLocaleString('uz-UZ') + "</b> so'm\n\n" +
+          "📞 Biz sizga tez orada bog'lanamiz.\n\n" +
+          "🚚 <b>Yetkazib berish haqida:</b>\n" +
+          "Yetkazib berish <b>BTC</b> yoki <b>Yandex</b> orqali amalga oshiriladi.\n" +
+          "Yo'l haqini to'lash sizga to'g'ri keladi.\n\n" +
+          "✅ Buyurtmangiz ko'rib chiqilmoqda, kuting!";
+
+        const customerRes = await fetch("https://api.telegram.org/bot" + BOT_TOKEN + "/sendMessage", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: tgUserId,
+            text: customerMsg,
+            parse_mode: "HTML"
+          })
+        });
+        const customerData = await customerRes.json();
+
+        // 6. Natijani ko'rsatish
         settings.stock = newStock;
         updateUI();
         closeModal();
-        alert(`🎉 Buyurtmangiz qabul qilindi!\nTez orada siz bilan bog'lanamiz.`);
+
+        if (customerData.ok) {
+          alert("🎉 Buyurtmangiz qabul qilindi!\nBot orqali batafsil xabar yuborildi.");
+        } else {
+          console.error("Mijoz xabar xatosi:", customerData);
+          alert("⚠️ Buyurtma saqlandi, lekin xabar yuborishda xatolik yuz berdi.\n\nSiz bilan tez orada bog'lanamiz.\n\nXato: " + (customerData.description || "Noma'lum"));
+        }
 
       } catch (err) {
         console.error("Xatolik:", err);
